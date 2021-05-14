@@ -13,7 +13,9 @@ connect ST-Link.
 
 Select `EWRF_E7082VM_bootloader` env and hit upload to flash a bootloader.
 
-Note: This automatically removes protections so no need to use ST-Link Utility anymore.
+*Note:* This automatically removes protections so no need to use ST-Link Utility anymore.
+
+*Note: Make sure the red led starts blinking after flashing! If not you might need open ST-Link utility and just apply option bytes. This seems to be a problem with some GD32 MCUs*
 
 Next you need to flash OpenVTx firmware:
 * Connect VTX to FC

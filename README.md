@@ -16,6 +16,6 @@ Then hit upload to flash a bootloader.
 Next you need to flash OpenVTx firmware:
 * Connect VTX to FC
 * Select `VTX (TBS SmartAudio)`
-* Use `EWRF_E7082VM_BOOTLOADER` target to upload actual OpenVTx firmware.
+* Use `EWRF_E7082VM_serialpassthrough` target to upload actual OpenVTx firmware.
 
 Happy flying :)

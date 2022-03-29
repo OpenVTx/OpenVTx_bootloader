@@ -115,7 +115,7 @@ void setup(void)
         switch (baudrate) {
             case 4800: // SA
                 break;
-            case 9600: // TRAMP
+            case 9600: // TRAMP and MSP
                 stopbits = 1;
                 break;
 #if BAUD_RATE != 4800 && BAUD_RATE != 9600

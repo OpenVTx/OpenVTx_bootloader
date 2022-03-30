@@ -12,8 +12,7 @@
 #define LED3        PA2 // Blue
 
 #ifndef BAUD_RATE
-//#define BAUD_RATE   115200
-#define BAUD_RATE   4800
+#define BAUD_RATE   57600
 #endif // BAUD_RATE
 
 
@@ -111,21 +110,12 @@ void setup(void)
 
     /* Check if the bootloader update was requested */
     if (0 <= baudrate) {
-        uint8_t stopbits = 2;
-        switch (baudrate) {
-            case 4800: // SA
-                break;
-            case 9600: // TRAMP and MSP
-                stopbits = 1;
-                break;
-#if BAUD_RATE != 4800 && BAUD_RATE != 9600
-            case BAUD_RATE:
-#endif
-                break;
-            default:
-                baudrate = BAUD_RATE;
-                break;
-        };
+        uint8_t stopbits = 1;
+        if (baudrate % 2)
+        {
+            baudrate--; // Reset bit that was used to indicate 2 stopbits
+            stopbits = 2;
+        }
         serial_begin(baudrate, UART_TX, UART_RX, stopbits);
 
         boot_start_time = millis();

@@ -12,7 +12,7 @@
 #define LED3        PA2 // Blue
 
 #ifndef BAUD_RATE
-#define BAUD_RATE   4801 // 57600
+#define BAUD_RATE   4801 // Default for SmartAudio
 #endif // BAUD_RATE
 
 

@@ -5,12 +5,13 @@
 #include "helpers.h"
 
 
-#define UART_RX     PA9
-#define UART_TX     PA9
-#define LED1        PA4 // Red
-#define LED2        PA3 // Green
-#define LED3        PA2 // Blue
-#define BUTTON      PA6
+#define UART_RX         PA9
+#define UART_TX         PA9
+#define LED1            PA4 // Red
+#define LED2            PA3 // Green
+#define LED3            PA2 // Blue
+#define BUTTON          PA6
+#define DEBOUNCE_TIME   50
 
 #ifndef BAUD_RATE
 #define BAUD_RATE   4801 // Default for SmartAudio
@@ -126,8 +127,19 @@ void setup(void)
     int baudrate = check_bootloader_data();
 
 #ifdef BUTTON
+    bool didButtonBounce = FALSE;
     if (gpio_in_read(buttonPin) == BUTTON_PRESSED)
-        baudrate = BAUD_RATE;
+    {
+        uint32_t now = millis();
+        while (millis() < now + DEBOUNCE_TIME)
+        {
+            if (gpio_in_read(buttonPin) == BUTTON_RELEASED)
+                didButtonBounce = TRUE;
+        }
+
+        if (!didButtonBounce)
+            baudrate = BAUD_RATE;
+    }
 #endif
 
     /* Check if the bootloader update was requested */

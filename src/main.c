@@ -5,11 +5,13 @@
 #include "helpers.h"
 
 
-#define UART_RX     PA9
-#define UART_TX     PA9
-#define LED1        PA4 // Red
-#define LED2        PA3 // Green
-#define LED3        PA2 // Blue
+#define UART_RX         PA9
+#define UART_TX         PA9
+#define LED1            PA4 // Red
+#define LED2            PA3 // Green
+#define LED3            PA2 // Blue
+#define BUTTON          PA6
+#define DEBOUNCE_TIME   50
 
 #ifndef BAUD_RATE
 #define BAUD_RATE   4801 // Default for SmartAudio
@@ -18,6 +20,11 @@
 
 static uint32_t boot_start_time;
 
+enum
+{
+  BUTTON_PRESSED,
+  BUTTON_RELEASED
+};
 
 #ifdef LED1
 static gpio_out_t led1_pin;
@@ -27,6 +34,9 @@ static gpio_out_t led2_pin;
 #endif
 #ifdef LED3
 static gpio_out_t led3_pin;
+#endif
+#ifdef BUTTON
+static gpio_in_t buttonPin;
 #endif
 
 void status_leds_init(void)
@@ -39,6 +49,13 @@ void status_leds_init(void)
 #endif
 #ifdef LED3
     led3_pin = gpio_out_setup(LED3, 0);
+#endif
+}
+
+void button_init(void)
+{
+#ifdef BUTTON
+    buttonPin = gpio_in_setup(BUTTON, 0);
 #endif
 }
 
@@ -102,11 +119,21 @@ void setup(void)
     fwdgt_window_value_config(0x0FFF);
     fwdgt_enable(); // Enable watchdog
     status_leds_init();
+    button_init();
 
     /* Reset WD */
     fwdgt_counter_reload();
 
     int baudrate = check_bootloader_data();
+
+#ifdef BUTTON
+    if (gpio_in_read(buttonPin) == BUTTON_PRESSED)
+    {
+        delay(DEBOUNCE_TIME);
+        if (gpio_in_read(buttonPin) == BUTTON_PRESSED)
+            baudrate = BAUD_RATE;
+    }
+#endif
 
     /* Check if the bootloader update was requested */
     if (0 <= baudrate) {

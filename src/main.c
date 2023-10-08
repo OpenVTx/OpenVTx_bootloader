@@ -127,17 +127,10 @@ void setup(void)
     int baudrate = check_bootloader_data();
 
 #ifdef BUTTON
-    bool didButtonBounce = FALSE;
     if (gpio_in_read(buttonPin) == BUTTON_PRESSED)
     {
-        uint32_t now = millis();
-        while (millis() < now + DEBOUNCE_TIME)
-        {
-            if (gpio_in_read(buttonPin) == BUTTON_RELEASED)
-                didButtonBounce = TRUE;
-        }
-
-        if (!didButtonBounce)
+        delay(DEBOUNCE_TIME);
+        if (gpio_in_read(buttonPin) == BUTTON_PRESSED)
             baudrate = BAUD_RATE;
     }
 #endif
